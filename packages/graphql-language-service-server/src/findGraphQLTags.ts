@@ -37,6 +37,7 @@ interface TagVisitors {
 }
 
 const BABEL_PLUGINS: ParserPlugin[] = [
+  'typescript',
   'jsx',
   'doExpressions',
   'objectRestSpread',
@@ -73,9 +74,7 @@ export function findGraphQLTags(
   const plugins = BABEL_PLUGINS.slice(0, BABEL_PLUGINS.length);
 
   const isTypeScript = ext === '.ts' || ext === '.tsx';
-  if (isTypeScript) {
-    plugins?.push('typescript');
-  } else {
+  if (!isTypeScript) {
     plugins?.push('flow', 'flowComments');
   }
   PARSER_OPTIONS.plugins = plugins;
@@ -202,6 +201,11 @@ function getGraphQLTagName(tag: Expression): string | null {
     DEFAULT_STABLE_TAGS.some(t => t === tag.name)
   ) {
     return tag.name;
+  } else if (
+    tag.type === 'TSNonNullExpression' &&
+    tag.expression.type === 'Identifier'
+  ) {
+    return getGraphQLTagName(tag.expression);
   } else if (
     tag.type === 'MemberExpression' &&
     tag.object.type === 'Identifier' &&
