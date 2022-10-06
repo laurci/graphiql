@@ -16,7 +16,6 @@ packages/graphiql/typedoc
 dist
 esm
 bundle
-*.vsix
 
 cypress/screenshots
 lerna-debug.log
@@ -30,3 +29,4 @@ yarn-1.18.0.js
 
 # Local Netlify folder
 .netlify
+
